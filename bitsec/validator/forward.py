@@ -64,9 +64,17 @@ async def forward(self):
         return
 
     vulnerable = random.random() < 0.8
-    challenge, expected_response = create_challenge(vulnerable=vulnerable)
-    bt.logging.info(f"created challenge")
-    wandb.log({"challenge": challenge})
+    challenge = None
+    expected_response = None
+
+    while not challenge:
+        try:
+            challenge, expected_response = create_challenge(vulnerable=vulnerable)
+            bt.logging.info(f"created challenge")
+            wandb.log({"challenge": challenge})
+        except Exception as e:
+            bt.logging.warning(f"Error creating challenge: {e}")
+            time.sleep(1)
 
 
     # The dendrite client queries the network.
