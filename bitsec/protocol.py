@@ -222,10 +222,15 @@ class PredictionResponse(pydantic.BaseModel):
         except KeyError:
             raise AttributeError(f"'{self.__class__.__name__}' has no attribute '{name}'")
 
+    """
+    # this added change in the last release broke the protocol
+    # caused the vulnerabilities list to become a list of dicts instead of a list of Vulenarability objects
+    # I'm not exactly sure why but reverting this change fixes the issues
     def __dict__(self):
-        """Make JSON serializable by default."""
+        #Make JSON serializable by default.
         return self.model_dump()
-
+    """
+    
     @classmethod
     def from_json(cls, json_data: Union[str, dict]) -> 'PredictionResponse':
         """Create a PredictionResponse from JSON data.
